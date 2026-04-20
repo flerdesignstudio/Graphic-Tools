@@ -1,3 +1,5 @@
+const { animate, scroll, stagger, spring } = Motion;
+
 document.addEventListener('DOMContentLoaded', () => {
     // Math Parameters
     const nSlider = document.getElementById('nSlider');
@@ -5,10 +7,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const nVal = document.getElementById('nVal');
     const mVal = document.getElementById('mVal');
     const variantToggle = document.getElementById('variantToggle');
-    
+
     // Buttons
     const randomizeBtn = document.getElementById('randomizeBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+
+    // --- UI Entrance Animations ---
+    animate(".sidebar-header", { opacity: [0, 1], y: [-20, 0] }, { duration: 0.6, ease: "easeOut" });
+    animate(".control-group", { opacity: [0, 1], x: [-20, 0] }, { 
+        delay: stagger(0.1, { startDelay: 0.2 }),
+        duration: 0.5,
+        ease: "easeOut"
+    });
+    animate(".canvas-container", { opacity: [0, 1], scale: [0.95, 1] }, { duration: 0.8, ease: "easeOut" });
+
+    // --- Interactive Button Animations ---
+    document.querySelectorAll('.notion-btn').forEach(btn => {
+        btn.addEventListener('mousedown', () => {
+            animate(btn, { scale: 0.95 }, { duration: 0.1 });
+        });
+        btn.addEventListener('mouseup', () => {
+            animate(btn, { scale: 1 }, { type: "spring", stiffness: 300, damping: 15 });
+        });
+        btn.addEventListener('mouseleave', () => {
+            animate(btn, { scale: 1 }, { duration: 0.1 });
+        });
+    });
 
     // --- Chladni Visualizer ---
     class ChladniVisualizer {
@@ -17,10 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
             this.ctx = this.canvas.getContext('2d');
             this.particles = [];
             this.numParticles = 2000;
-            
+
             // Current Pattern
             this.pattern = { n: 3, m: 5, v: 0 };
-            
+
             this.isPlaying = true;
 
             // Customization State
@@ -68,16 +92,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 '9:16': { w: 1080, h: 1920 },
                 '4:3': { w: 1600, h: 1200 }
             };
-            
+
             const dims = ratios[this.aspectRatio] || ratios['1:1'];
-            
+
             // Set the canvas internal resolution
             this.canvas.width = dims.w;
             this.canvas.height = dims.h;
 
             // Provide inline CSS to enforce the aspect ratio in the DOM
             this.canvas.style.aspectRatio = `${dims.w} / ${dims.h}`;
-            
+
             // Ensure width/height CSS scales to bounds but maintains ratio
             this.canvas.style.width = '100%';
             this.canvas.style.height = '100%';
@@ -161,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const vib = this.getVibration(p.x, p.y, this.pattern.n, this.pattern.m, this.pattern.v);
                 const totalVibration = Math.abs(vib);
 
-                const moveAmount = totalVibration * 50 + 1.0; 
+                const moveAmount = totalVibration * 50 + 1.0;
 
                 p.x += (Math.random() - 0.5) * moveAmount;
                 p.y += (Math.random() - 0.5) * moveAmount;
@@ -189,10 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Background
             if (this.config.useBgGradient) {
-               svgContent += `  <defs>\n    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">\n      <stop offset="0%" stop-color="${this.config.bgGradStart}" />\n      <stop offset="100%" stop-color="${this.config.bgGradEnd}" />\n    </linearGradient>\n  </defs>\n`;
-               svgContent += `  <rect width="${width}" height="${height}" fill="url(#bgGrad)" />\n`;
+                svgContent += `  <defs>\n    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">\n      <stop offset="0%" stop-color="${this.config.bgGradStart}" />\n      <stop offset="100%" stop-color="${this.config.bgGradEnd}" />\n    </linearGradient>\n  </defs>\n`;
+                svgContent += `  <rect width="${width}" height="${height}" fill="url(#bgGrad)" />\n`;
             } else {
-               svgContent += `  <rect width="${width}" height="${height}" fill="${this.config.trailColor}" />\n`;
+                svgContent += `  <rect width="${width}" height="${height}" fill="${this.config.trailColor}" />\n`;
             }
 
             // Particle Gradient Def
@@ -204,12 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Particles as a single path
             let pathData = '';
-            for(let p of this.particles) {
+            for (let p of this.particles) {
                 const y = parseFloat(p.y).toFixed(2);
                 const r = this.config.particleSize;
                 const xMinus = (parseFloat(p.x) - r).toFixed(2);
                 const xPlus = (parseFloat(p.x) + r).toFixed(2);
-                
+
                 // SVG Arc commands to draw a full circle
                 pathData += `M ${xMinus} ${y} A ${r} ${r} 0 1 0 ${xPlus} ${y} A ${r} ${r} 0 1 0 ${xMinus} ${y} `;
             }
@@ -232,12 +256,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     nSlider.addEventListener('input', (e) => {
         nVal.textContent = e.target.value;
+        e.target.setAttribute('aria-valuenow', e.target.value);
         updatePatternFromUI();
         visualizer.initParticles();
     });
 
     mSlider.addEventListener('input', (e) => {
         mVal.textContent = e.target.value;
+        e.target.setAttribute('aria-valuenow', e.target.value);
         updatePatternFromUI();
         visualizer.initParticles();
     });
@@ -270,9 +296,11 @@ document.addEventListener('DOMContentLoaded', () => {
         visualizer.togglePlay();
         if (visualizer.isPlaying) {
             playBtnText.textContent = 'Pause';
+            togglePlayBtn.setAttribute('aria-pressed', 'true');
             togglePlayBtn.querySelector('svg').innerHTML = `<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>`;
         } else {
             playBtnText.textContent = 'Play';
+            togglePlayBtn.setAttribute('aria-pressed', 'false');
             togglePlayBtn.querySelector('svg').innerHTML = `<polygon points="5 3 19 12 5 21 5 3"></polygon>`;
         }
     });
@@ -427,6 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
     particleCountSlider.addEventListener('input', (e) => {
         const val = parseInt(e.target.value);
         particleCountVal.textContent = val;
+        e.target.setAttribute('aria-valuenow', val);
         updateParticleWarning(val);
     });
 
@@ -440,9 +469,10 @@ document.addEventListener('DOMContentLoaded', () => {
     particleSizeSlider.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
         particleSizeVal.textContent = val.toFixed(1);
+        e.target.setAttribute('aria-valuenow', val);
         visualizer.updateConfig({ particleSize: val });
         if (!visualizer.isPlaying) {
-            visualizer.animate(true); // Redraw immediately if paused
+            visualizer.animate(true);
         }
     });
 });
