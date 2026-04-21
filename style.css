@@ -393,12 +393,13 @@ body {
     position: relative;
 }
 
-/* Extend clickable area to meet 44px min without visual change */
+/* Extend clickable area to meet 44px min without visual change 
 .color-wrapper::after {
     content: '';
     position: absolute;
     inset: -4px;
 }
+*/
 
 .color-wrapper:hover {
     border-color: var(--border-strong);
