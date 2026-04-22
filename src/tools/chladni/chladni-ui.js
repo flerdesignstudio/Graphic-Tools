@@ -1,4 +1,5 @@
 import { ChladniVisualizer } from './visualizer.js';
+import { animate, stagger, spring } from 'motion';
 
 export default {
     id: 'chladni',
@@ -154,10 +155,7 @@ export default {
         mainContainer.innerHTML = this.getMainHTML();
 
         // Ensure app animations run
-        if (window.Motion) {
-            const { animate, stagger, spring } = window.Motion;
-            animate(".control-group", { opacity: [0, 1], x: [-20, 0] }, { delay: stagger(0.1), duration: 0.5 });
-        }
+        animate(".control-group", { opacity: [0, 1], x: [-20, 0] }, { delay: stagger(0.1), duration: 0.5 });
 
         // Initialize Logic
         const canvas = document.getElementById('visualizer');
@@ -303,14 +301,11 @@ export default {
         });
         
         // Setup interactive button animations
-        if (window.Motion) {
-            const { animate } = window.Motion;
-            document.querySelectorAll('.notion-btn').forEach(btn => {
-                this._addListener(btn.id || btn.className, 'mousedown', () => animate(btn, { scale: 0.95 }, { duration: 0.1 }));
-                this._addListener(btn.id || btn.className, 'mouseup', () => animate(btn, { scale: 1 }, { type: "spring", stiffness: 300, damping: 15 }));
-                this._addListener(btn.id || btn.className, 'mouseleave', () => animate(btn, { scale: 1 }, { duration: 0.1 }));
-            });
-        }
+        document.querySelectorAll('.notion-btn').forEach(btn => {
+            this._addListener(btn.id || btn.className, 'mousedown', () => animate(btn, { scale: 0.95 }, { duration: 0.1 }));
+            this._addListener(btn.id || btn.className, 'mouseup', () => animate(btn, { scale: 1 }, { type: "spring", stiffness: 300, damping: 15 }));
+            this._addListener(btn.id || btn.className, 'mouseleave', () => animate(btn, { scale: 1 }, { duration: 0.1 }));
+        });
     },
 
     destroy() {
