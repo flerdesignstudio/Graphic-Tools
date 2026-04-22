@@ -5,10 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fler Design Studio Tools</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="src/styles/global.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Tool Navigation Styles */
+        #app-navigation {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px 16px 16px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 4px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .nav-btn .icon {
+            font-size: 14px;
+        }
+
+        #tool-sidebar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 16px 16px 20px 16px;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,175 +47,21 @@
                 <p>Make the best of it</p>
             </header>
 
-            <div class="sidebar-content">
-                <section class="control-group">
-                    <h2 class="group-title">Pattern Math</h2>
+            <!-- Global App Navigation Switcher -->
+            <div id="app-navigation"></div>
 
-                    <div class="slider-row">
-                        <div class="slider-header">
-                            <label for="nSlider">N Parameter</label>
-                            <span id="nVal" aria-live="polite">3</span>
-                        </div>
-                        <input type="range" id="nSlider" min="1" max="20" step="1" value="3" class="notion-slider"
-                            aria-label="N Parameter" aria-valuemin="1" aria-valuemax="20" aria-valuenow="3">
-                    </div>
-
-                    <div class="slider-row">
-                        <div class="slider-header">
-                            <label for="mSlider">M Parameter</label>
-                            <span id="mVal" aria-live="polite">5</span>
-                        </div>
-                        <input type="range" id="mSlider" min="1" max="20" step="1" value="5" class="notion-slider"
-                            aria-label="M Parameter" aria-valuemin="1" aria-valuemax="20" aria-valuenow="5">
-                    </div>
-
-                    <label class="toggle-row">
-                        <input type="checkbox" id="variantToggle" class="notion-checkbox">
-                        <span>Variant (Addition Formula)</span>
-                    </label>
-
-                    <div style="display: flex; gap: 8px;">
-                        <button id="togglePlayBtn" class="notion-btn notion-btn-secondary" style="flex: 1;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="6" y="4" width="4" height="16"></rect>
-                                <rect x="14" y="4" width="4" height="16"></rect>
-                            </svg>
-                            <span id="playBtnText">Pause</span>
-                        </button>
-                        <button id="randomizeBtn" class="notion-btn notion-btn-secondary" style="flex: 1;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="16 3 21 3 21 8"></polyline>
-                                <line x1="4" y1="20" x2="21" y2="3"></line>
-                                <polyline points="21 16 21 21 16 21"></polyline>
-                                <line x1="15" y1="15" x2="21" y2="21"></line>
-                                <line x1="4" y1="4" x2="9" y2="9"></line>
-                            </svg>
-                            Random
-                        </button>
-                    </div>
-                </section>
-
-                <hr class="separator" />
-
-                <section class="control-group">
-                    <h2 class="group-title">Visuals & Colors</h2>
-
-                    <div class="setting-row">
-                        <label>Theme Preset</label>
-                        <select id="themeSelect" class="notion-select" onchange="this.blur()">
-                            <option value="neon">Neon</option>
-                            <option value="fire">Fire</option>
-                            <option value="ocean">Ocean</option>
-                            <option value="forest">Forest</option>
-                            <option value="custom">Custom</option>
-                        </select>
-                    </div>
-
-                    <h3 class="sub-title">Particles</h3>
-                    <div class="color-grid">
-                        <div class="color-item">
-                            <label for="color1">Color 1</label>
-                            <div class="color-wrapper"><input type="color" id="color1" value="#39FF14"></div>
-                        </div>
-                        <div class="color-item">
-                            <label for="color2">Color 2</label>
-                            <div class="color-wrapper"><input type="color" id="color2" value="#00FFFF"></div>
-                        </div>
-                    </div>
-
-                    <label class="toggle-row">
-                        <input type="checkbox" id="useGradient" class="notion-checkbox" checked>
-                        <span>Particle Gradient</span>
-                    </label>
-
-                    <h3 class="sub-title">Background</h3>
-                    <div class="color-grid">
-                        <div class="color-item">
-                            <label for="bgGradStart">Start</label>
-                            <div class="color-wrapper"><input type="color" id="bgGradStart" value="#000000"></div>
-                        </div>
-                        <div class="color-item">
-                            <label for="bgGradEnd">End</label>
-                            <div class="color-wrapper"><input type="color" id="bgGradEnd" value="#1a1a2e"></div>
-                        </div>
-                        <div class="color-item">
-                            <label for="bgTrail">Solid Mode</label>
-                            <div class="color-wrapper"><input type="color" id="bgTrail" value="#000a00"></div>
-                        </div>
-                    </div>
-
-                    <label class="toggle-row">
-                        <input type="checkbox" id="useBgGradient" class="notion-checkbox">
-                        <span>Background Gradient</span>
-                    </label>
-                </section>
-
-                <hr class="separator" />
-
-                <section class="control-group">
-                    <h2 class="group-title">Settings & Export</h2>
-
-                    <h3 class="sub-title">Aspect Ratio</h3>
-                    <div class="setting-row">
-                        <select id="aspectRatioSelect" class="notion-select" onchange="this.blur()">
-                            <option value="1:1">1:1 (Square)</option>
-                            <option value="16:9">16:9 (Landscape)</option>
-                            <option value="9:16">9:16 (Portrait)</option>
-                            <option value="4:3">4:3 (Standard)</option>
-                        </select>
-                    </div>
-
-                    <h3 class="sub-title">Density & Size</h3>
-                    <div class="slider-row">
-                        <div class="slider-header">
-                            <label for="particleCount">Count</label>
-                            <span id="particleCountVal" aria-live="polite">2000</span>
-                        </div>
-                        <input type="range" id="particleCount" min="500" max="8000" step="100" value="2000"
-                            class="notion-slider" aria-label="Particle count" aria-valuemin="500" aria-valuemax="8000"
-                            aria-valuenow="2000">
-                        <span id="particleWarning" class="status-msg" style="margin-bottom: 8px;"
-                            aria-live="polite">Recommended</span>
-                    </div>
-
-                    <div class="slider-row">
-                        <div class="slider-header">
-                            <label for="particleSize">Size</label>
-                            <span id="particleSizeVal" aria-live="polite">1.5</span>
-                        </div>
-                        <input type="range" id="particleSize" min="0.5" max="10" step="0.5" value="1.5"
-                            class="notion-slider" aria-label="Particle size" aria-valuemin="0.5" aria-valuemax="10"
-                            aria-valuenow="1.5">
-                    </div>
-
-                    <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
-                        <button id="fullscreenBtn" class="notion-btn notion-btn-secondary">
-                            Preview Fullscreen
-                        </button>
-                        <button id="downloadBtn" class="notion-btn notion-btn-primary">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                            Export SVG
-                        </button>
-                    </div>
-                </section>
+            <!-- Dynamic Sidebar Injection Container -->
+            <div class="sidebar-content" id="tool-sidebar-container">
             </div>
         </aside>
 
-        <main class="canvas-container" id="canvas-container" aria-label="Chladni pattern visualizer">
-            <canvas id="visualizer" role="img"
-                aria-label="Animated Chladni pattern — a simulation of sand particles forming geometric nodes on a vibrating plate"></canvas>
+        <!-- Dynamic Main Canvas Injection Container -->
+        <main class="canvas-container" id="tool-main-container">
         </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/motion@12.37.0/dist/motion.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="src/app.js"></script>
 </body>
 
 </html>
