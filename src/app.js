@@ -1,16 +1,39 @@
 import chladniTool from './tools/chladni/chladni-ui.js';
 
 // --- Tool Registry ---
-const tools = {
+export const tools = {
     [chladniTool.id]: chladniTool
     // New tools will be imported and added here
 };
 
 let currentTool = null;
 
-document.addEventListener('DOMContentLoaded', () => {
+export const loadTool = (toolId) => {
+    const tool = tools[toolId];
+    if (!tool) return;
+    if (currentTool === tool) return; // already loaded
+
     const sidebarContainer = document.getElementById('tool-sidebar-container');
     const mainContainer = document.getElementById('tool-main-container');
+
+    // 1. Teardown active tool
+    if (currentTool && currentTool.destroy) {
+        currentTool.destroy();
+    }
+
+    // Update active state in nav
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.toolId === toolId);
+    });
+
+    // 2. Initialize new tool
+    currentTool = tool;
+    if (tool.init) {
+        tool.init(sidebarContainer, mainContainer);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
     const navMenu = document.getElementById('app-navigation');
 
     // Build Navigation UI
@@ -23,33 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navMenu.appendChild(btn);
     });
 
-    const loadTool = (toolId) => {
-        const tool = tools[toolId];
-        if (!tool) return;
-        if (currentTool === tool) return; // already loaded
 
-        // 1. Teardown active tool
-        if (currentTool && currentTool.destroy) {
-            currentTool.destroy();
-        }
-
-        // Update active state in nav
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            if (btn.dataset.toolId === toolId) {
-                btn.style.background = 'var(--text-primary)';
-                btn.style.color = '#0d0d0d';
-            } else {
-                btn.style.background = 'var(--glass-low)';
-                btn.style.color = 'var(--text-secondary)';
-            }
-        });
-
-        // 2. Initialize new tool
-        currentTool = tool;
-        if (tool.init) {
-            tool.init(sidebarContainer, mainContainer);
-        }
-    };
 
     // Load initial tool (Chladni)
     loadTool(chladniTool.id);
